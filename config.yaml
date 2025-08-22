@@ -1,0 +1,6 @@
+# config.yaml
+spider:
+  zsxq_access_token: "" # 必选，通过F12 cookie查看
+  user_agent: "" # 必选，通过F12 Network查看
+  group_id: "" # 必选，通过F12 Network查看
+  column_id: ""  # 可选，留空则下载所有专栏，通过F12 Network查看专栏ID

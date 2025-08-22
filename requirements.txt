@@ -1,0 +1,5 @@
+playwright
+pyyaml
+requests
+BeautifulSoup4
+PyPDF2
