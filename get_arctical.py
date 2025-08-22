@@ -121,6 +121,8 @@ class Spider:
         merger = PdfMerger()
         pdf_files = os.listdir(os.path.join(output_dir, dir_name))
         pdf_files = [f for f in pdf_files if f.endswith('.pdf')]
+        # 过滤掉结果文件
+        pdf_files = [f for f in pdf_files if f != os.path.basename(dir_name) + '.pdf']
         # 按文件名-前缀数字排序
         pdf_files.sort(key=lambda x: int(x.split('-')[0]))
 
@@ -213,6 +215,11 @@ class Spider:
                 qrcode_div = soup.find('div', class_='qrcode-container')
                 if qrcode_div:
                     qrcode_div.decompose()  # 删除整个元素及其子元素
+
+                # 查找并删除 type 为 'hidden' 的 input
+                hidden_inputs = soup.find_all('input', type='hidden')
+                for input_tag in hidden_inputs:
+                    input_tag.decompose()
 
                 # 查找并删除 class 为 'milkdown-preview' 的 div
                 milkdown_div = soup.find('div', class_='milkdown-preview')

@@ -3,13 +3,16 @@
 
 爬取知识星球专栏文章整理，并制作 PDF 电子书。[https://www.zsxq.com/](https://www.zsxq.com/)
 
+# 效果展示
+![img.png](img.png)
+
 ## 功能
 
 * 使用最新接口(v2)。
 * 使用原生的HTML内容，保留原有格式。
 * 使用playwright生成pdf，支持emoji表情。 
 * 可控制下载特定专栏内容
-* 专栏生成的pdf保存在对应的pdf/专栏名称/目录下。
+* 专栏生成的pdf保存在pdf/专栏名称/专栏名称.pdf。
 
 ## 环境配置
 执行下面命令安装依赖：
