@@ -4,3 +4,5 @@ spider:
   user_agent: "" # 必选，通过F12 Network查看
   group_id: "" # 必选，通过F12 Network查看
   column_id: ""  # 可选，留空则下载所有专栏，通过F12 Network查看专栏ID
+  theme_id: ""  # 可选，留空则下载所有话题主题，通过F12 Network查看话题的主题的ID
+  download_type: column # column-下载专栏，file-下载文件，topic-下载话题

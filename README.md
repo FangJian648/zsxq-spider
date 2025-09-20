@@ -1,9 +1,9 @@
 # ZSXQ-Spider
 爬取知识星球内容，并制作成PDF电子书。
 
-爬取知识星球专栏文章整理，并制作 PDF 电子书。[https://www.zsxq.com/](https://www.zsxq.com/)
+可以根据选择爬取知识星球 专栏|主题|文件 ，并制作 PDF 电子书。[https://www.zsxq.com/](https://www.zsxq.com/)
 
-# 效果展示
+# 效果部分展示
 ![img.png](img.png)
 
 ## 功能
@@ -12,7 +12,10 @@
 * 使用原生的HTML内容，保留原有格式。
 * 使用playwright生成pdf，支持emoji表情。 
 * 可控制下载特定专栏内容
-* 专栏生成的pdf保存在pdf/专栏名称/专栏名称.pdf。
+* 专栏生成的pdf保存在zsxq_column_pdf/专栏名称/专栏名称.pdf。
+* 精华主题生成的pdf保存在zsxq_topics_pdf/主题名称/主题名称.pdf。
+* 文件下载保存在zsxq_files/下。
+* 注意使用脚本的时候不要开VPN。
 
 ## 环境配置
 执行下面命令安装依赖：
