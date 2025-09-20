@@ -76,7 +76,11 @@ class Spider:
         dir_name: html所在目录 /html/星球导读
         将目录下的所有html使用playwright生成pdf，并合并为一个pdf
         """
-        html_files = os.listdir(os.path.join('html', dir_name))
+        try:
+            html_files = os.listdir(os.path.join('html', dir_name))
+        except FileNotFoundError:
+            print(f"目录不存在: html/{dir_name}")
+            return
         html_files = [f for f in html_files if f.endswith('.html')]
         html_files.sort(key=lambda x: int(x.split('-')[0]))
         output_dir = 'pdf'
@@ -204,7 +208,13 @@ class Spider:
 
                 topic_url = f'https://api.zsxq.com/v2/topics/{topic_id}/info'
                 topic_data = self.get_url_data(topic_url).get('topic')
-                article_url = topic_data['talk']['article']['article_url']
+                try:
+                    article_url = topic_data['talk']['article']['article_url']
+                except KeyError:
+                    print('error')
+                    print(topic_url)
+                    print(topic_title)
+                    continue
                 article_html = self.get_url_data(article_url)
                 # 修改html需要从本地加载的css和js改成从线上加载
                 article_html = self.replace_local_assets_with_online(article_html)
