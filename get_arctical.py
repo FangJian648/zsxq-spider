@@ -54,6 +54,8 @@ class Spider:
         filename = filename.replace('>', '》')
         filename = filename.replace('<', '《')
         filename = filename.replace('\n', ' ')
+        filename = filename.replace('\t', ' ')
+        filename = filename.replace('|', '｜')
         return filename.strip()
 
     def get_url_data(self, url):
@@ -200,6 +202,24 @@ class Spider:
         # 替换标题和正文内容
         html_content = template_content.replace('{{title}}', title).replace('{{content}}', text).replace('{{time}}', time)
         return html_content
+
+    def extra_files(self,base_dir,output_dir):
+        # base下遍历所有目录，取出dir.pdf文件，copy到output_dir目录下
+        dirs=os.listdir(base_dir)
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+        for dir in dirs:
+            dir_path=os.path.join(base_dir,dir)
+            pdf_file=os.path.join(dir_path,dir+'.pdf')
+            if os.path.exists(pdf_file):
+                dest_file=os.path.join(output_dir,dir+'.pdf')
+                if os.path.exists(dest_file):
+                    print(f"已存在电子书，跳过：{dest_file}")
+                    continue
+                with open(pdf_file,'rb') as fsrc:
+                    with open(dest_file,'wb') as fdst:
+                        fdst.write(fsrc.read())
+                print(f"已提取电子书：{dest_file}")
 
     def get_zsxq_article(self, topic_id, index, column=None, download_dir='zsxq_column_html'):
         topic_url = f'https://api.zsxq.com/v2/topics/{topic_id}/info'
@@ -349,6 +369,7 @@ class Spider:
             # 生成专栏的PDF
             self.generate_merge_pdf(str(column_index) + '-' + column_name)
             column_index += 1
+        self.extra_files(base_dir='zsxq_column_pdf',output_dir='zsxq_column_books')
 
     def get_zsxq_files(self):
         # 检查是否存在目录zsxq——files，不存在则创建
@@ -418,7 +439,7 @@ class Spider:
             # 生成专题的PDF
             self.generate_merge_pdf(str(tag_index) + '-' + tag_name, save_dir='zsxq_topic_pdf', base_dir='zsxq_topic_html')
             tag_index += 1
-
+        self.extra_files(base_dir='zsxq_topic_pdf', output_dir='zsxq_topic_books')
 
     def run(self):
         if self.DOWNLOAD_TYPE == 'column':

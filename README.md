@@ -12,8 +12,8 @@
 * 使用原生的HTML内容，保留原有格式。
 * 使用playwright生成pdf，支持emoji表情。 
 * 可控制下载特定专栏内容
-* 专栏生成的pdf保存在zsxq_column_pdf/专栏名称/专栏名称.pdf。
-* 精华主题生成的pdf保存在zsxq_topics_pdf/主题名称/主题名称.pdf。
+* 专栏生成的电子书保存在zsxq_column_book。
+* 精华主题生成的pdf保存在zsxq_topics_book。
 * 文件下载保存在zsxq_files/下。
 * 生成的pdf中保存了下载资源的ppt或者其他资源的链接。
 * 注意使用脚本的时候不要开VPN。
