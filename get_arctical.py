@@ -212,6 +212,33 @@ class Spider:
             article_html = self.get_url_data(article_url)
         else:
             article_html = self.generate_html(topic_title, topic_data['talk']['text'], topic_data['create_time'])
+        # 下载pdf
+        if topic_data['talk'].get('files'):
+            for file in topic_data['talk']['files']:
+                file_id = file['file_id']
+                download_url_api = 'https://api.zsxq.com/v2/files/' + str(file_id) + '/download_url'
+                download_url = self.get_url_data(download_url_api).get('download_url')
+                # article_html中<footer>上方插入附件下载链接
+                attachment_html = f"""
+                <a href="{download_url}"
+                   download
+                   style="
+                       display: inline-block;
+                       padding: 10px 20px;
+                       background-color: #4CAF50;
+                       color: white;
+                       text-decoration: none;
+                       border-radius: 5px;
+                       font-weight: bold;
+                       transition: background-color 0.3s;
+                   "
+                   onmouseover="this.style.backgroundColor='#45a049';"
+                   onmouseout="this.style.backgroundColor='#4CAF50';"
+                >
+                    {file['name']}
+                </a>"""
+                article_html = article_html.replace('<footer>', attachment_html + '\n<footer>')
+
         # 修改html需要从本地加载的css和js改成从线上加载
         article_html = self.replace_local_assets_with_online(article_html)
         # html删除qrcode-container标签
