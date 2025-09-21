@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import re
 
 import requests
@@ -8,6 +9,7 @@ from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 from PyPDF2 import PdfMerger
 import yaml
+from datetime import datetime
 
 class Spider:
     ZSXQ_ACCESS_TOKEN = ''          # 登录后Cookie中的Token（必须修改）
@@ -51,6 +53,7 @@ class Spider:
         filename = filename.replace('/', '_')
         filename = filename.replace('>', '》')
         filename = filename.replace('<', '《')
+        filename = filename.replace('\n', ' ')
         return filename.strip()
 
     def get_url_data(self, url):
@@ -180,19 +183,35 @@ class Spider:
 
         return html_content
 
+    def generate_html(self,title, text, time):
+        # 读取template.html文件内容
+        with open('template.html', 'r', encoding='utf-8') as file:
+            template_content = file.read()
+        soup = BeautifulSoup(text, "html.parser")
+        text = soup.get_text()
+        # 根据\n把text变成<p>
+        paragraphs = text.split('\n')
+        text = ''.join(
+            f'<p>{p}</p>' if p.strip() else '<p><br/></p><p><br/></p>'
+            for p in paragraphs
+        )
+        # 替换时间2025-07-22T16:52:43.227+0800->2025-07-22 16:52
+        time = datetime.strptime(time, '%Y-%m-%dT%H:%M:%S.%f%z').strftime('%Y-%m-%d %H:%M')
+        # 替换标题和正文内容
+        html_content = template_content.replace('{{title}}', title).replace('{{content}}', text).replace('{{time}}', time)
+        return html_content
+
     def get_zsxq_article(self, topic_id, index, column=None, download_dir='zsxq_column_html'):
         topic_url = f'https://api.zsxq.com/v2/topics/{topic_id}/info'
         topic_data = self.get_url_data(topic_url).get('topic')
         topic_title = self.sanitize_filename(
             topic_data.get('title') or topic_data.get('text')
         )
-        try:
+        if topic_data['talk'].get('article'):
             article_url = topic_data['talk']['article']['article_url']
-        except KeyError:
-            print('error')
-            print(topic_url)
-            return 0
-        article_html = self.get_url_data(article_url)
+            article_html = self.get_url_data(article_url)
+        else:
+            article_html = self.generate_html(topic_title, topic_data['talk']['text'], topic_data['create_time'])
         # 修改html需要从本地加载的css和js改成从线上加载
         article_html = self.replace_local_assets_with_online(article_html)
         # html删除qrcode-container标签
