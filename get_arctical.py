@@ -338,7 +338,6 @@ class Spider:
     def get_zsxq_topics(self):
         tags_api = 'https://api.zsxq.com/v2/groups/'+self.GROUP_ID+'/topics/digests/hashtags?type=default'
         tags_data = self.get_url_data(tags_api).get('hashtags')
-        index=0
         tag_index=0
         if self.THEME_ID != '':
             # 如果指定了专题ID，则只处理该专题
@@ -348,20 +347,24 @@ class Spider:
             )
             tags_data = [tags_data[tag_index]]
         for tag in tags_data:
+            index = 0
+            topic_index = 0
             tag_name = tag.get('title')
             tag_num = tag.get('topics_count')
             tag_hash = tag.get('hashtag_id')
-            topics_api = f'https://api.zsxq.com/v2/groups/{self.GROUP_ID}/topics/digests?sort=by_create_time&direction=desc&index={index}&count=30&hashtag_id={tag_hash}'
-            topics_data = self.get_url_data(topics_api)
-            index = topics_data.get('index')
-            topics = topics_data.get('topics')
-            topic_index = 0
-            for topic in topics:
-                title = topic.get('title')
-                topic_id = topic.get('topic_id')
-                success = self.get_zsxq_article(topic_id, topic_index, str(tag_index) + '-' + tag_name, download_dir='zsxq_topic_html')
-                if success == 1:
-                    topic_index += 1
+            while True:
+                topics_api = f'https://api.zsxq.com/v2/groups/{self.GROUP_ID}/topics/digests?sort=by_create_time&direction=desc&index={index}&count=30&hashtag_id={tag_hash}'
+                topics_data = self.get_url_data(topics_api)
+                index = topics_data.get('index')
+                topics = topics_data.get('topics')
+                if len(topics) == 0:
+                    break
+                for topic in topics:
+                    title = topic.get('title')
+                    topic_id = topic.get('topic_id')
+                    success = self.get_zsxq_article(topic_id, topic_index, str(tag_index) + '-' + tag_name, download_dir='zsxq_topic_html')
+                    if success == 1:
+                        topic_index += 1
             # 生成专题的PDF
             self.generate_merge_pdf(str(tag_index) + '-' + tag_name, save_dir='zsxq_topic_pdf', base_dir='zsxq_topic_html')
             tag_index += 1
