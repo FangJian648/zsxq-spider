@@ -15,6 +15,7 @@
 * 专栏生成的pdf保存在zsxq_column_pdf/专栏名称/专栏名称.pdf。
 * 精华主题生成的pdf保存在zsxq_topics_pdf/主题名称/主题名称.pdf。
 * 文件下载保存在zsxq_files/下。
+* 生成的pdf中保存了下载资源的ppt或者其他资源的链接。
 * 注意使用脚本的时候不要开VPN。
 
 ## 环境配置
