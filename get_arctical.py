@@ -207,6 +207,10 @@ class Spider:
         topic_title = self.sanitize_filename(
             topic_data.get('title') or topic_data.get('text')
         )
+        # print(topic_url)
+        if topic_data.get('talk') is None:
+            print(f"文章为提问，跳过：{topic_id} - {topic_title}")
+            return 0
         if topic_data['talk'].get('article'):
             article_url = topic_data['talk']['article']['article_url']
             article_html = self.get_url_data(article_url)
